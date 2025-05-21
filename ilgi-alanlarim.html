@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>İlgi Alanlarım | Futbol</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">İrfan Külünkoğlu</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Anasayfa</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="hakkimda.html">Hakkımda</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ozgecmis.html">Özgeçmiş</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="sehrim.html">Şehrim</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="takimimiz.html">Takımımız</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="ilgi-alanlarim.html">İlgi Alanlarım</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="iletisim.html">İletişim</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="login.html">Giriş</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">⚽ 5 Büyük Avrupa Ligi Puan Durumu</h2>
+
+  <div id="leagues"></div>
+</div>
+
+<footer class="bg-dark text-white text-center py-3">
+  <p>&copy; 2025 İrfan Külünkoğlu | Web Teknolojileri Projesi</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const apiKey = "214319d70a544ce9bad2ce887eb1dbbd";
+const leagues = {
+  "PL": "Premier League",
+  "PD": "La Liga",
+  "SA": "Serie A",
+  "BL1": "Bundesliga",
+  "FL1": "Ligue 1"
+};
+
+const container = document.getElementById("leagues");
+
+for (let code in leagues) {
+  fetch(`https://api.football-data.org/v4/competitions/${code}/standings`, {
+    headers: { "X-Auth-Token": apiKey }
+  })
+  .then(res => res.json())
+  .then(data => {
+    const standings = data.standings[0].table;
+
+    const table = `
+      <div class="mb-5">
+        <h4 class="text-center">${leagues[code]}</h4>
+        <div class="table-responsive">
+          <table class="table table-striped table-bordered text-center">
+            <thead>
+              <tr>
+                <th>Sıra</th>
+                <th>Takım</th>
+                <th>O</th>
+                <th>G</th>
+                <th>B</th>
+                <th>M</th>
+                <th>A</th>
+                <th>Y</th>
+                <th>Av.</th>
+                <th>Puan</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${standings.map(team => `
+                <tr>
+                  <td>${team.position}</td>
+                  <td><img src="${team.team.crest}" alt="" width="20"> ${team.team.shortName}</td>
+                  <td>${team.playedGames}</td>
+                  <td>${team.won}</td>
+                  <td>${team.draw}</td>
+                  <td>${team.lost}</td>
+                  <td>${team.goalsFor}</td>
+                  <td>${team.goalsAgainst}</td>
+                  <td>${team.goalDifference}</td>
+                  <td><strong>${team.points}</strong></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML += table;
+  })
+  .catch(err => {
+    container.innerHTML += `
+      <div class="alert alert-danger">
+        ${leagues[code]} puan durumu alınamadı. Hata: ${err.message}
+      </div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
