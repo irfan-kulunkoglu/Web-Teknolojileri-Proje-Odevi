@@ -145,3 +145,18 @@ footer {
     margin-top: auto;
 }
 
+form label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+form .form-control,
+form .form-select,
+form textarea {
+    font-size: 0.95rem;
+}
+
+.d-flex.gap-2 {
+    flex-wrap: wrap;
+    justify-content: center;
+}
